@@ -26,13 +26,13 @@ Bevitel:
 Vizsg:
 	cmp al, ah
 	jz Tarol
-
 	inc ah
 	loop Vizsg
 
-	mov ah, 02h
+	mov ah, 2
 	mov bh, 0
-	mov dh, 10
+	mov dh, 1
+	mov dl, 2
 	int 10h
 
 	mov dx, offset hiba
@@ -46,10 +46,10 @@ Tarol:
 	inc di
 	mov al, '$' 
 	mov [di], al
-	mov ah, 02h
+	mov ah, 2
 	mov bh, 0
-	mov dh, 5
-	mov dl, 28
+	mov dh, 1
+	mov dl, 2
 	int 10h
 	
 	mov dx, offset ertek
@@ -60,13 +60,15 @@ Tarol:
 	add ax, 4
 	cmp ax, di
 	jnz Bevitel
-	mov ah, 02h
+	
+	mov ah, 2
 	mov bh, 0
-	mov dh, 7
+	mov dh, 1
+	mov dl, 2
 	int 10h
 
 	mov dx, offset uzenet
-	mov ah, 09h
+	mov ah, 09
 	int 21h
 
 Program_vege:
