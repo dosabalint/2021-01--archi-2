@@ -12,7 +12,7 @@ MenuKiiras:
     mov ah, 2
     mov bh, 0
     mov dh, 1
-    mov dl, 2
+    mov dl, 0
     int 10h
 
     mov dx, offset ertek1_prefix
@@ -26,7 +26,7 @@ MenuKiiras:
     mov ah, 2
     mov bh, 0
     mov dh, 2
-    mov dl, 2
+    mov dl, 0
     int 10h
 
     mov dx, offset ertek2_prefix
@@ -96,7 +96,20 @@ Bevitel1:
     mov al, '1'
     mov [bx], al
     mov di, offset ertek1
+    
+    mov ah, 2
+    mov bh, 0
     mov dh, 1
+    mov dl, 0
+    int 10h
+    mov dx, offset marker
+    mov ah, 09
+    int 21h
+    mov ah, 2
+    mov dh, 1
+    mov dl, 11
+    int 10h
+    
     jmp Bevitel
 
 Bevitel2: 
@@ -104,8 +117,24 @@ Bevitel2:
     mov al, '2'
     mov [bx], al
     mov di, offset ertek2
+    
+    mov ah, 2
+    mov bh, 0
     mov dh, 2
+    mov dl, 0
+    int 10h
+    mov dx, offset marker
+    mov ah, 09
+    int 21h
+    mov ah, 2
+    mov dh, 2
+    mov dl, 11
+    int 10h
+    
     jmp Bevitel
+
+JI_Program_vege:
+    jmp Program_vege
 
 Bevitel:
     xor ax, ax
@@ -149,12 +178,9 @@ Vizsgal:
     
     jmp Bevitel
 
-JI_Program_vege:
-    jmp Program_vege
-
 JI_Bevitel:
     jmp Bevitel
-
+    
 Tarol:
     mov [di], al
     inc di
@@ -215,16 +241,16 @@ Program_vege:
 hiba: db 'Nem megengedett karakter!$'
 ertek1: db '****$' 
 ertek2: db '****$' 
-ertek1_prefix: db 'ertek 1: $' 
-ertek2_prefix: db 'ertek 2: $' 
+ertek1_prefix: db '  ertek 1: $' 
+ertek2_prefix: db '  ertek 2: $' 
 ertekvalaszto: db '0$'
 menuszoveg1: db 'Menu:$' 
 menuszoveg2: db ' - 1: ertek1 felvetele$' 
 menuszoveg3: db ' - 2: ertek2 felvetele$' 
 menuszoveg4: db ' - esc: kilepes$' 
 
-test1: db 'test1$'
 spacer: db '                             $'
+marker: db '*$'
 
 Code    Ends
 Data    Segment
