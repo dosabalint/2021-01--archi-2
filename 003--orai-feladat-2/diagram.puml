@@ -1,0 +1,34 @@
+@startuml
+scale 1.2
+
+(*) --> init
+"init" --> képernyő törlés 1
+"képernyő törlés 1" --> bevitel
+"bevitel" --> képernyő törlés 2
+
+if "ESC" then
+    -->[yes] program vége
+else  
+
+    if "0-9" then
+    -->[yes] tarolas
+    -->szám kiírás
+        
+        if "szám hossza 4?"
+        -->[yes] bevitel vége
+        --> (*)
+        else 
+        -->[no] bevitel
+        endif
+    
+    else
+    -->[yes] hiba kiírás
+    --> bevitel
+    endif
+
+endif
+ 
+ 
+"program vége" --> (*)
+
+@enduml
