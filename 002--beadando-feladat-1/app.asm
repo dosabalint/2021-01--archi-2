@@ -4,7 +4,7 @@ Code	Segment
 Start:
 	mov	ax, Code
 	mov	DS, AX
-	mov ax,3
+	mov ax, 3
 	int 10h
 
 Kiir:
@@ -12,7 +12,6 @@ Kiir:
 	mov bh, 0 ;videó lap száma
 	mov dh, 10 ;kurzor a 10. sorba
 	mov dl, 0 ;kurzor a 0. oszlopba
-	
 	int 10h
 	
 	mov dx, offset uzenet1
