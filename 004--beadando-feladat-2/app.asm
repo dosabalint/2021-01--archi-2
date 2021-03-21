@@ -102,7 +102,10 @@ Bevitel1:
     mov dh, 1
     mov dl, 0
     int 10h
-    mov dx, offset marker
+    mov dx, offset ertek1_prefix_with_marker
+    mov ah, 09
+    int 21h
+    mov dx, offset placeholder
     mov ah, 09
     int 21h
     mov ah, 2
@@ -123,7 +126,10 @@ Bevitel2:
     mov dh, 2
     mov dl, 0
     int 10h
-    mov dx, offset marker
+    mov dx, offset ertek2_prefix_with_marker
+    mov ah, 09
+    int 21h
+    mov dx, offset placeholder
     mov ah, 09
     int 21h
     mov ah, 2
@@ -133,15 +139,98 @@ Bevitel2:
     
     jmp Bevitel
 
+Undo:
+    mov bx, offset ertekvalaszto
+    mov al, [bx]
+    cmp al, '1'
+    jz Undo1
+    
+    cmp al, '2'
+    jz Undo2
+    
+    jmp Program_vege
+        
 JI_Program_vege:
     jmp Program_vege
+    
+Undo1:
+    mov dh, 1
+    mov bx, offset ertek1
+    cmp bx, di
+    jz Bevitel
+    
+    dec di
+    mov al, '$' 
+    mov [di], al
+    
+    mov ah, 2
+    mov bh, 0
+    mov dh, 1
+    mov dl, 0
+    int 10h
+    mov dx, offset ertek1_prefix_with_marker
+    mov ah, 09
+    int 21h
+    mov dx, offset placeholder
+    mov ah, 09
+    int 21h
+    mov ah, 2
+    mov dh, 1
+    mov dl, 11
+    int 10h
+    mov dx, offset ertek1
+    mov ah, 09
+    int 21h
+    
+    mov dh, 1
+    
+    jmp Bevitel
 
+JI_Undo:
+    jmp Undo    
+
+Undo2:
+    mov dh, 2
+    mov bx, offset ertek2
+    cmp bx, di
+    jz Bevitel
+
+    dec di 
+    mov al, '$' 
+    mov [di], al
+    
+    mov ah, 2
+    mov bh, 0
+    mov dh, 2
+    mov dl, 0
+    int 10h
+    mov dx, offset ertek2_prefix_with_marker
+    mov ah, 09
+    int 21h
+    mov dx, offset placeholder
+    mov ah, 09
+    int 21h
+    mov ah, 2
+    mov dh, 2
+    mov dl, 11
+    int 10h
+    mov dx, offset ertek2
+    mov ah, 09
+    int 21h
+   
+    mov dh, 2
+    
+    jmp Bevitel
+    
 Bevitel:
     xor ax, ax
     int 16h
     cmp al, 27
-    jz JI_Program_vege
+    jz JI2_Program_vege
 
+    cmp al, 98
+    jz JI_Undo
+    
     mov cx, dx
     mov ah, 2
     mov bh, 0
@@ -181,6 +270,9 @@ Vizsgal:
 JI_Bevitel:
     jmp Bevitel
     
+JI2_Program_vege:
+    jmp Program_vege
+    
 Tarol:
     mov [di], al
     inc di
@@ -189,7 +281,6 @@ Tarol:
 
     mov ah, 2
     mov bh, 0
-    ; mov dh, 1
     mov dl, 11
     int 10h
 
@@ -243,6 +334,11 @@ ertek1: db '****$'
 ertek2: db '****$' 
 ertek1_prefix: db '  ertek 1: $' 
 ertek2_prefix: db '  ertek 2: $' 
+ertek1_prefix_with_marker: db '* ertek 1: $' 
+ertek2_prefix_with_marker: db '* ertek 2: $' 
+
+placeholder: db '****$' 
+
 ertekvalaszto: db '0$'
 menuszoveg1: db 'Menu:$' 
 menuszoveg2: db ' - 1: ertek1 felvetele$' 
