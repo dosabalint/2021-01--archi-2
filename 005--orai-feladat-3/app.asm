@@ -11,87 +11,180 @@ Start:
     push 1
     push 1
     push 78
-    push 23
+    push 24                 ; [o_min, s_min, o_max, s_max]
+        
+    pop ax                  ; 1. sorban kezdunk
+    mov ah, 1
+    push ax                 ; [..., s_current-s_max]
     
+    xor ah, ah              ; ido baseline
+    int 1ah
+    add dx, 4
+    push dx                 ; [..., s_current-s_max, ido]
     
-    mov dh, 1
-    pop cx                  ; max
-
 Rajzol_lefele:    
+
+    xor ah, ah              ; kesleltetes
+    int 1ah
+    pop cx
+    push cx                 ; [..., s_current-s_max, ido]
+    cmp dx, cx
+    jl Rajzol_lefele 
+    pop cx                  ; [..., s_current-s_max]
+    
     mov bh, 0               ; kurzor
+    pop dx
+    push dx                 ; [..., s_current-s_max]
     mov dl, 1
     mov ah, 2
     int 10h
     
-    push dx                 ; karakter kiiras    
-    mov dx, offset karakter 
+    mov dx, offset karakter ; karakter kiiras
     mov ah, 09h
     int 21h
-    pop dx
     
-    xor ax, ax              ; bevitel
-    int 16h
-    
-    inc dh                  ; inkrementalas
-    cmp cl, dh
+    pop bx                  ; [..., s_current-s_max]
+    inc bh                  ; inkrementalas
+    push bx                 ; [..., s_current-s_max]
+
+    xor ah, ah              ; ido baseline
+    int 1ah
+    add dx, 4
+    push dx                 ; [..., s_current-s_max, ido]    
+
+    cmp bl, bh
     jnz Rajzol_lefele
-    pop cx
+    pop ax                  ; [..., s_min, o_max, s_current-s_max]
+    pop ax                  ; [..., s_min, o_max]
+    pop ax                  ; [..., s_min]
+    mov ah, al              
+    mov al, 1               ;
+    push ax                 ; [..., s_min, o_max-o_current]    
     
-Rajzol_jobbra:    
-    mov bl, 0               ; kurzor
+    xor ah, ah              ; ido baseline
+    int 1ah
+    add dx, 4
+    push dx                 ; [..., o_max-o_current, ido]
+
+Rajzol_jobbra:
+    xor ah, ah              ; kesleltetes
+    int 1ah
+    pop cx
+    push cx                 ; [..., o_max-o_current, ido]
+    cmp dx, cx
+    jl Rajzol_jobbra 
+    pop cx  
+
+    pop dx                  ; kurzor
+    push dx    
+    mov dh, 23
+    mov bh, 0               
     mov ah, 2
     int 10h
     
-    push dx                 ; karakter kiiras
-    mov dx, offset karakter 
+    mov dx, offset karakter ; karakter kiiras 
     mov ah, 09h
     int 21h
-    pop dx
     
-    xor ax, ax              ; bevitel
-    int 16h
+    pop bx                  ; [..., o_max-o_current]
+    inc bl                  ; inkrementalas
+    push bx                 ; [..., o_max-o_current]
+   
+    xor ah, ah              ; ido baseline
+    int 1ah
+    add dx, 4
+    push dx                 ; [..., o_max-o_current, ido]
     
-    inc dl                  ; inkrementalas
-    cmp cl, dl
+    cmp bl, bh
     jnz Rajzol_jobbra
-    pop cx
-    
+    pop ax                  ; [o_min, s_min, o_max-o_current]
+    pop ax                  ; [o_min, s_min]
+    pop ax                  ; [o_min]
+    mov ah, 23
+    push ax                 ; [o_min, s_current-s_min]
+         
+    xor ah, ah              ; ido baseline
+    int 1ah
+    add dx, 4
+    push dx                 ; [..., s_current-s_min, ido]
+
 Rajzol_felfele:    
-    mov bl, 0               ; kurzor
-    mov ah, 2
-    int 10h
-    
-    push dx                 ; karakter kiiras
-    mov dx, offset karakter 
-    mov ah, 09h
-    int 21h
-    pop dx
-    
-    xor ax, ax              ; bevitel
-    int 16h
-    
-    dec dh                  ; dekrementalas
-    cmp cl, dh
-    jnz Rajzol_felfele
+    xor ah, ah              ; kesleltetes
+    int 1ah
     pop cx
-    
-Rajzol_balra:    
-    mov bl, 0               ; kurzor
+    push cx                 ; [..., s_current-s_min, ido]
+    cmp dx, cx
+    jl Rajzol_felfele 
+    pop cx                  ; [..., s_current-s_min]
+ 
+    pop dx                  ; kurzor
+    push dx    
+    mov dl, 78
+    mov bh, 0               
     mov ah, 2
     int 10h
     
-    push dx                 ; karakter kiiras
-    mov dx, offset karakter 
+    mov dx, offset karakter ; karakter kiiras 
     mov ah, 09h
     int 21h
-    pop dx
     
+    pop bx                  ; [..., s_current-s_min]
+    dec bh                  ; dekrementalas
+    push bx                 ; [..., s_current-s_min]
+
+    xor ah, ah              ; ido baseline
+    int 1ah
+    add dx, 4               
+    push dx                 ; [..., s_current-s_min, ido]
+    
+    cmp bl, bh
+    jnz Rajzol_felfele
+    pop ax                  ; [o_min s_current-s_min]
+    pop ax                  ; [o_min]
+    pop ax                  ; []
+    mov ah, al               
+    mov al, 78               
+    push ax                 ; [o_min-o_current]
+    
+    xor ah, ah              ; ido baseline
+    int 1ah
+    add dx, 4               
+    push dx                 ; [o_min-o_current, ido]
+         
+Rajzol_balra:    
+    xor ah, ah              ; kesleltetes
+    int 1ah
+    pop cx
+    push cx                 ; [o_min-o_current, ido]
+    cmp dx, cx
+    jl Rajzol_balra 
+    pop cx                  ; [o_min-o_current]
+
+    pop dx                  ; kurzor
+    push dx    
+    mov dh, 1
+    mov bh, 0               
+    mov ah, 2
+    int 10h
+    
+    mov dx, offset karakter ; karakter kiiras 
+    mov ah, 09h
+    int 21h
+ 
+    pop bx                  ; [o_min-o_current]
+    dec bl                  ; dekrementalas
+    push bx                 ; [o_min-o_current]
+
+    xor ah, ah              ; ido baseline
+    int 1ah
+    add dx, 4        
+    push dx                 ; [o_min-o_current, ido]
+
+    cmp bl, bh
+    jnz Rajzol_balra
+
     xor ax, ax              ; bevitel
     int 16h
-    
-    dec dl                  ; dekrementalas
-    cmp cl, dl
-    jnz Rajzol_balra
 
 Program_vege:
     mov ax, 3
