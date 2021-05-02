@@ -97,7 +97,7 @@ Default_hiba:
     int 10h
     
 Default:
-    mov cx, 100          ; alapertelmezett v0
+    mov cx, 10          ; alapertelmezett v0
 
 Init:
     mov ax, Code
@@ -131,18 +131,14 @@ Rajz:
     mov bl, al
     mul bl
     shr ax, 1
-    mov bl, 100
-    div bl
     mov di, ax
 
     pop ax                  ; sx kiszamitas
-    add ax, 10
+    inc ax
     push ax
     dec ax
     mov bl, cl
     mul bl
-    mov bl, 10
-    div bl
     mov si, ax
 
     cmp si, 80              ; jobb szele?
